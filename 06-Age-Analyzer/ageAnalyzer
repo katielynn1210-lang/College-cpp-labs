@@ -1,0 +1,103 @@
+/*
+Author: Katie Williams
+Date: 03/01/2026
+Lab #: 2
+Lab Description: Displays all valid entered ages as
+well as calculates and displays the average age, highest
+age, and lowest age.
+*/
+
+#include <algorithm>
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+struct Age {
+    int ageInput;
+    double average;
+    int highest;
+    int lowest;
+
+    //overload the struct
+    bool operator<(const Age& other) const {
+        return ageInput < other.ageInput;
+    }
+};
+
+int positiveInput(const string& prompt);
+void displayAges(const vector<Age>& ages);
+double calculateAverage(const vector<Age>& ages);
+void getHighestAndLowest(const vector<Age>& ages);
+
+int main() {
+    vector<Age> ages;
+    Age a;
+
+    cout << "Enter an age (or -1 to exit the program)\n";
+
+    while (true) {
+        a.ageInput = positiveInput("Enter an age: ");
+        if (a.ageInput == -1) break;
+        ages.push_back(a);
+    }
+
+    displayAges(ages);
+    cout << "\nAverage age: " << calculateAverage(ages) << endl;
+    getHighestAndLowest(ages);
+
+
+    return 0;
+}
+
+// Prompts user for a positive integer and validates input
+int positiveInput(const string& prompt) {
+    int value;
+
+    while (true) {
+        cout << prompt;
+        cin >> value;
+
+        //checks for valid input
+        if (cin.fail() || value == 0 || value < -1) {
+            cout << "Invalid input. Please enter a positive whole number." << endl;
+            cin.clear();
+            cin.ignore(1000, '\n');
+        } else {
+            cin.ignore(1000, '\n');
+            return value;
+        }
+    }
+
+}
+
+// Display list of ages
+void displayAges(const vector<Age>& ages) {
+
+    cout << "\n-------List of Ages-------\n";
+    for (auto a : ages) {
+      cout << "- " << a.ageInput << endl ;
+    }
+
+}
+
+// Calculates and displays age average
+double calculateAverage(const vector<Age>& ages) {
+    double sum = 0;
+    for (auto a : ages) {
+        sum += a.ageInput;
+    }
+
+    cout << fixed << setprecision(2);
+    double average = sum / ages.size();
+
+    return average;
+}
+
+// Finds and displays the highest and lowest age
+void getHighestAndLowest(const vector<Age>& ages) {
+    auto result = minmax_element(ages.begin(), ages.end());
+    cout << "Lowest age: " << result.first->ageInput << endl;
+    cout << "Highest age: " << result.second->ageInput << endl;
+}
